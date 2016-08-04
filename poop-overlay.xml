@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<repositories version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>poop-overlay</name>
+    <description lang="en">Ganthore's personal ebuild overlay</description>
+    <homepage>https://github.com/ganthore/poop-overlay</homepage>
+    <owner type="project">
+      <email>ganthore@gmail.com</email>
+      <name>ganthore</name>
+    </owner>
+    <source type="git">https://github.com/ganthore/poop-overlay</source>
+    <feed>https://github.com/ganthore/poop-overlay/commits/master.atom</feed>
+  </repo>
+</repositories>
