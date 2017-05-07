@@ -1,0 +1,43 @@
+--- a/src/drivers/driver_wext.c	2016-10-02 14:51:11.000000000 -0400
++++ b/src/drivers/driver_wext.c	2017-05-07 10:53:42.099820899 -0400
+@@ -675,6 +675,7 @@
+ 		} else {
+ 			wpa_printf(MSG_DEBUG, "WEXT: Interface up");
+ 			drv->if_disabled = 0;
++			drv->scans = 0;
+ 			wpa_supplicant_event(drv->ctx, EVENT_INTERFACE_ENABLED,
+ 					     NULL);
+ 		}
+@@ -1123,6 +1124,8 @@
+ 		ret = -1;
+ 	}
+ 
++	drv->scans++;
++	
+ 	/* Not all drivers generate "scan completed" wireless event, so try to
+ 	 * read results after a timeout. */
+ 	timeout = 10;
+@@ -1147,6 +1150,7 @@
+ static u8 * wpa_driver_wext_giwscan(struct wpa_driver_wext_data *drv,
+ 				    size_t *len)
+ {
++        struct wpa_driver_scan_params params;
+ 	struct iwreq iwr;
+ 	u8 *res_buf;
+ 	size_t res_buf_len;
+@@ -1173,6 +1177,15 @@
+ 			wpa_printf(MSG_DEBUG, "Scan results did not fit - "
+ 				   "trying larger buffer (%lu bytes)",
+ 				   (unsigned long) res_buf_len);
++                } if (errno == EINVAL && drv->scans == 1) {
++                        /*
++                         * Broadcom's wl driver is buggy and the first scan
++                         * after ifup always fail with EINVAL. Rerun the
++                         * scan to get scan results.
++                         */
++                        os_memset(&params, 0, sizeof(params));
++                        wpa_driver_wext_scan(drv, &params);
++                        return NULL;
+ 		} else {
+ 			wpa_printf(MSG_ERROR, "ioctl[SIOCGIWSCAN]: %s",
+ 				   strerror(errno));

@@ -1,0 +1,10 @@
+--- a/src/drivers/driver_wext.h	2016-10-02 14:51:11.000000000 -0400
++++ a/src/drivers/driver_wext.h	2017-05-07 10:55:02.755190409 -0400
+@@ -39,6 +39,7 @@
+ 
+ 	char mlmedev[IFNAMSIZ + 1];
+ 
++        int scans;
+ 	int scan_complete_events;
+ 
+ 	int cfg80211; /* whether driver is using cfg80211 */
